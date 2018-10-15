@@ -36,6 +36,7 @@ export default class App extends Component {
     } else {
       const timeStart = now;
       const timeBetween = now - this.state.timeStart;
+      if (timeBetween < 150) return;
       const latestBpm = 60000 / timeBetween;
       // creates a new average based on the number of counts already and the latest bpm
       const bpm = Math.round(((this.state.bpm * (count - 1) + latestBpm) / count)*10)/10;
@@ -120,12 +121,20 @@ const Sidebar = styled.div`
   width: 340px;
   background: #ccc;
   overflow-y: scroll;
+
+  @media (max-width: 800px) {
+    position: relative;
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
 `;
 
 const Title = styled.h1`
-  font-size: 4rem;
+  font-size: 5rem;
   margin: 0;
   line-height: 1em;
+  font-weight: 400;
 `;
 
 const TitleCaption = styled.h2`
@@ -154,13 +163,17 @@ const Explanation = styled.div`
   color: #555; 
 `;
 
-
 const MainArea = styled.div`
   position: relative;
-  width: 100%;
+  // width: 100%;
   max-width: 900px;
   padding: 2rem 4rem;
   margin-left: 340px;
+  text-align: center;
+
+  @media (max-width: 800px) {
+    margin-left: 0;
+  }
 `;
 
 const ShowBPM = styled.div`
@@ -171,4 +184,5 @@ const ShowBPM = styled.div`
 const ShowBPMCaption = styled.div`
   font-size: 2rem;
   color: #ccc;
+  margin: 1rem 0;
 `;
