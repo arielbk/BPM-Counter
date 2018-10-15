@@ -1,13 +1,8 @@
-import React, { Component } from 'react';
-import { 
-  Container,
-  Button, 
-  Card } from 'reactstrap';
+import React, { Component, Fragment } from 'react';
+import styled, { injectGlobal } from 'styled-components';
+import './Animation.css';
 
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-class App extends Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,9 +26,6 @@ class App extends Component {
   }
 
   onTap = e => {
-    // this is a bit messy, e is only passed if tap button, not for keypress
-    if (e) e.preventDefault();
-    // stuff to do when tapped
     const now = (new Date()).getTime();
     let count = this.state.count;
     if (!count ||
@@ -46,7 +38,7 @@ class App extends Component {
       const timeBetween = now - this.state.timeStart;
       const latestBpm = 60000 / timeBetween;
       // creates a new average based on the number of counts already and the latest bpm
-      const bpm = Math.round(((this.state.bpm * (count - 1) + latestBpm) / count)*100)/100;
+      const bpm = Math.round(((this.state.bpm * (count - 1) + latestBpm) / count)*10)/10;
       this.setState({timeStart, timeBetween, bpm});
       count++;
     }
@@ -60,49 +52,123 @@ class App extends Component {
 
   render() {
     return (
-      <Container>
-        <h1 className="my-3">BPM Counter</h1>
+      <Fragment>
+        <Sidebar>
+          <Title>BPM Count</Title>
+          <TitleCaption>Tap along to music and find out the tempo</TitleCaption>
 
-        {/* Getting all the pieces down before I split them up into components */}
+          <Group>
+            <Button onClick={this.onTap}>Tap</Button>
+            <Explanation>or press any key to record BPM</Explanation>
+          </Group>
 
-        Press any key to record a beat or <Button onClick={this.onTap} className="my-3 mx-3">Tap</Button><br />
-        Reset after 
-        <select className="mx-2" value={this.state.resetTime} onChange={e => {
-          this.setState({resetTime: e.target.value})
-        }}>
-          <option value="1000">1</option>
-          <option value="2000">2</option>
-          <option value="3000">3</option>
-          <option value="4000">4</option>
-          <option value="5000">5</option>
-        </select>
-        seconds of no tap or 
-        <Button onClick={this.onReset} className="btn-danger mx-3">Reset</Button>
+          <Group>
+            <Button>{this.state.count}</Button>
+            <Explanation>taps recorded</Explanation>
+          </Group>
 
-        <Card className="my-4 p-3">
-          <h3>Number of taps:</h3> {this.state.count}
-        </Card>
-        <Card className="my-4 p-3">
-          <h3>Time between taps:</h3> {this.state.timeBetween}
-        </Card>
-        <Card className="my-4 p-3">
-          <h3>BPM:</h3> {this.state.bpm}
-        </Card>
-        <Card className="my-4 p-3">
-          <h3>Visualiser:</h3>
-          <p>
-            This is animated according to the current BPM
-          </p>
+          <Group>
+            <Button onClick={this.onReset}>Reset</Button>
+            <Explanation>or reset after 2 seconds</Explanation>
+          </Group>
+
+        </Sidebar>
+
+        <MainArea>
+          <ShowBPM>
+            { this.state.bpm }
+          </ShowBPM>
+          <ShowBPMCaption>
+            Average BPM
+          </ShowBPMCaption>
+
           <div className="loader">
             <div className="loader__squares">
               <div className="loader__squares--one"></div>
               <div className="loader__squares--two"></div>
             </div>
           </div>
-        </Card>
-      </Container>
+        </MainArea>
+        
+      </Fragment>
     );
   }
 }
 
-export default App;
+injectGlobal`
+  *, *:before, *:after {
+    box-sizing: border-box;
+  }
+
+  html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+`;
+
+const Sidebar = styled.div`
+  padding: 2rem;
+  position: fixed;
+  left: 0;
+  height: 100%;
+  width: 340px;
+  background: #ccc;
+  overflow-y: scroll;
+`;
+
+const Title = styled.h1`
+  font-size: 4rem;
+  margin: 0;
+  line-height: 1em;
+`;
+
+const TitleCaption = styled.h2`
+  font-size: 1.2rem;
+  font-weight: 400;
+`;
+
+const Group = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 3rem 0;
+`;
+
+const Button = styled.button`
+  font-size: 2rem;
+  background: #eee;
+  border: 1px solid #000;
+  padding: .6rem;
+  width: 40%;
+  border-radius: 3px;
+`;
+
+const Explanation = styled.div`
+  width: 50%;
+  color: #555; 
+`;
+
+
+const MainArea = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  padding: 2rem 4rem;
+  margin-left: 340px;
+`;
+
+const ShowBPM = styled.div`
+  font-size: 10rem;
+  border-bottom: 1px solid #ccc;
+`;
+
+const ShowBPMCaption = styled.div`
+  font-size: 2rem;
+  color: #ccc;
+`;
