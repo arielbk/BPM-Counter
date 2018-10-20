@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
-import './Animation.css';
 
 export default class App extends Component {
   constructor(props) {
@@ -18,11 +17,6 @@ export default class App extends Component {
     document.addEventListener('keyup', () => {
       this.onTap();
     })
-  }
-
-  componentDidUpdate() {
-    let html = document.querySelector('body');
-    html.style = `--animationTime: ${120/this.state.bpm}s`
   }
 
   onTap = e => {
@@ -166,7 +160,11 @@ const Button = styled.button`
 
 const Explanation = styled.div`
   width: 50%;
-  color: #fff; 
+  color: #fff;
+
+  @media (max-width: 800px) {
+    text-align: left;
+  }
 `;
 
 const MainArea = styled.div`
