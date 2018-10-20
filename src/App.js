@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import styled, { injectGlobal } from 'styled-components';
+import styled, { createGlobalStyle, keyframes } from 'styled-components';
 import './Animation.css';
 
 export default class App extends Component {
@@ -83,20 +83,19 @@ export default class App extends Component {
             Average BPM
           </ShowBPMCaption>
 
-          <div className="loader">
-            <div className="loader__squares">
-              <div className="loader__squares--one"></div>
-              <div className="loader__squares--two"></div>
-            </div>
-          </div>
+        <Pulser timing={Math.floor(60/this.state.bpm*10)/10}>
+          <div className="circle circle--one"></div>
+          <div className="circle circle--two"></div>
+        </Pulser>
+
         </MainArea>
-        
+        <GlobalStyle />
       </Fragment>
     );
   }
 }
 
-injectGlobal`
+const GlobalStyle = createGlobalStyle`
   *, *:before, *:after {
     box-sizing: border-box;
   }
@@ -104,12 +103,18 @@ injectGlobal`
   html {
     margin: 0;
     padding: 0;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
   }
 
   body {
+    background: #222;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+    color: #fff;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 `;
 
@@ -119,7 +124,7 @@ const Sidebar = styled.div`
   left: 0;
   height: 100%;
   width: 340px;
-  background: #ccc;
+  background: #555;
   overflow-y: scroll;
 
   @media (max-width: 800px) {
@@ -151,22 +156,24 @@ const Group = styled.div`
 
 const Button = styled.button`
   font-size: 2rem;
-  background: #eee;
-  border: 1px solid #000;
+  background: #222;
+  color: #fff;
   padding: .6rem;
   width: 40%;
+  border: none;
   border-radius: 3px;
 `;
 
 const Explanation = styled.div`
   width: 50%;
-  color: #555; 
+  color: #fff; 
 `;
 
 const MainArea = styled.div`
   position: relative;
   // width: 100%;
   max-width: 900px;
+  min-height: 100vh;
   padding: 2rem 4rem;
   margin-left: 340px;
   text-align: center;
@@ -177,12 +184,56 @@ const MainArea = styled.div`
 `;
 
 const ShowBPM = styled.div`
+  font-family: 'Montserrat', sans-serif;
   font-size: 10rem;
-  border-bottom: 1px solid #ccc;
+  color: #fff;
+  border-bottom: 1px solid #555;
+  margin: 80px auto 0;
 `;
 
 const ShowBPMCaption = styled.div`
   font-size: 2rem;
-  color: #ccc;
+  color: #555;
   margin: 1rem 0;
+`;
+
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
+
+const Pulser = styled.div`
+margin: 100px auto;
+  width: 220px;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .circle {
+    height: 100px;
+    width: 100px;
+    background: #D94747;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+
+  .circle--one {
+    animation: ${pulse} ${props => props.timing}s linear infinite;
+  }
+
+  .circle--two {
+    animation: ${pulse} ${props => props.timing}s linear infinite;
+    animation-delay: ${props => props.timing / 2}s;
+  }
 `;
