@@ -169,8 +169,6 @@ const Explanation = styled.div`
 
 const MainArea = styled.div`
   position: relative;
-  // width: 100%;
-  max-width: 900px;
   min-height: 100vh;
   padding: 2rem 4rem;
   margin-left: 340px;
